@@ -236,3 +236,51 @@ button:focus {
     height: 30px;
     margin-right: 5px;
 }
+
+#leaderboard {
+    display: none;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+}
+
+#leaderboard h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    font-weight: 900;
+}
+
+.leaderboard-entry {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.leaderboard-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.leaderboard-name {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+.leaderboard-score {
+    font-size: 1.5em;
+    font-weight: 400;
+}
