@@ -1,192 +1,143 @@
-// Локальные переменные и инициализация
 let score = parseInt(localStorage.getItem('score')) || 0;
 let pointsPerClick = parseInt(localStorage.getItem('pointsPerClick')) || 1;
-let autoClickerIncome = parseInt(localStorage.getItem('autoClickerIncome')) || 0;
-let upgrade1Cost = parseInt(localStorage.getItem('upgrade1Cost')) || 10;
-let upgrade2Cost = parseInt(localStorage.getItem('upgrade2Cost')) || 100;
-let autoClickerCost = parseInt(localStorage.getItem('autoClickerCost')) || 500;
-let lastActive = parseInt(localStorage.getItem('lastActive')) || Date.now();
-let autoClickerExpiry = parseInt(localStorage.getItem('autoClickerExpiry')) || 0;
-let autoClickerInterval = null;
+let incomePerHour = parseInt(localStorage.getItem('incomePerHour')) || 0;
+let autoClickerActive = localStorage.getItem('autoClickerActive') === 'true';
 
 const scoreElement = document.getElementById('score');
-const incomeElement = document.getElementById('income');
 const pointsPerClickElement = document.getElementById('points-per-click');
+const incomeElement = document.getElementById('income');
 const clickableCoin = document.getElementById('clickable-coin');
 const shopButton = document.getElementById('shop-button');
-const shop = document.getElementById('shop');
-const closeShopButton = document.getElementById('close-shop-button');
-const upgrade1Button = document.getElementById('upgrade1-button');
-const upgrade2Button = document.getElementById('upgrade2-button');
-const autoClickerButton = document.getElementById('auto-clicker-button');
 const leaderboardButton = document.getElementById('leaderboard-button');
-const leaderboard = document.getElementById('leaderboard');
+const closeShopButton = document.getElementById('close-shop-button');
 const closeLeaderboardButton = document.getElementById('close-leaderboard-button');
+const shop = document.getElementById('shop');
+const leaderboard = document.getElementById('leaderboard');
 const leaderboardEntries = document.getElementById('leaderboard-entries');
 
-// Обновляем счет и доход на основе времени
-updateScore();
-applyOfflineEarnings();
+function updateScore() {
+    scoreElement.textContent = score;
+    localStorage.setItem('score', score);
+}
+
+function updatePointsPerClick() {
+    pointsPerClickElement.textContent = `Points per Click: ${pointsPerClick}`;
+    localStorage.setItem('pointsPerClick', pointsPerClick);
+}
+
+function updateIncome() {
+    incomeElement.textContent = `Income: ${incomePerHour}/hour`;
+    localStorage.setItem('incomePerHour', incomePerHour);
+}
+
+function showPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'notification';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+    setTimeout(() => {
+        popup.remove();
+    }, 2000);
+}
 
 clickableCoin.addEventListener('click', () => {
     score += pointsPerClick;
-    showCoinPopup(pointsPerClick);
     updateScore();
+    showPopup(`+${pointsPerClick}`);
 });
 
 shopButton.addEventListener('click', () => {
     shop.classList.remove('hidden');
-    shop.style.display = 'block';
-});
-
-closeShopButton.addEventListener('click', () => {
-    shop.classList.add('hidden');
-    shop.style.display = 'none';
 });
 
 leaderboardButton.addEventListener('click', () => {
     leaderboard.classList.remove('hidden');
-    leaderboard.style.display = 'block';
-    updateLeaderboard();
+    // Fetch and display leaderboard entries
+    fetchLeaderboard();
+});
+
+closeShopButton.addEventListener('click', () => {
+    shop.classList.add('hidden');
 });
 
 closeLeaderboardButton.addEventListener('click', () => {
     leaderboard.classList.add('hidden');
-    leaderboard.style.display = 'none';
 });
 
-upgrade1Button.addEventListener('click', () => {
-    if (score >= upgrade1Cost) {
-        score -= upgrade1Cost;
-        pointsPerClick++;
-        upgrade1Cost *= 2;
-        upgrade1Button.textContent = `Upgrade 1 (Cost: ${upgrade1Cost}) - +1 per click`;
+function fetchLeaderboard() {
+    // Simulate fetching leaderboard data
+    const mockData = [
+        { name: 'Player1', score: 1000, avatar: 'https://via.placeholder.com/50' },
+        { name: 'Player2', score: 800, avatar: 'https://via.placeholder.com/50' },
+        { name: 'Player3', score: 600, avatar: 'https://via.placeholder.com/50' }
+    ];
+
+    leaderboardEntries.innerHTML = '';
+    mockData.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'leaderboard-entry';
+        div.innerHTML = `
+            <img src="${entry.avatar}" class="leaderboard-avatar" alt="${entry.name}">
+            <span class="leaderboard-name">${entry.name}</span>
+            <span class="leaderboard-score">${entry.score}</span>
+        `;
+        leaderboardEntries.appendChild(div);
+    });
+}
+
+document.getElementById('upgrade1-button').addEventListener('click', () => {
+    if (score >= 10) {
+        score -= 10;
+        pointsPerClick += 1;
         updateScore();
+        updatePointsPerClick();
+        showPopup('Upgrade 1 purchased!');
     } else {
-        alert('Not enough points for upgrade!');
+        showPopup('Not enough coins!');
     }
 });
 
-upgrade2Button.addEventListener('click', () => {
-    if (score >= upgrade2Cost) {
-        score -= upgrade2Cost;
+document.getElementById('upgrade2-button').addEventListener('click', () => {
+    if (score >= 100) {
+        score -= 100;
         pointsPerClick += 5;
-        upgrade2Cost *= 2;
-        upgrade2Button.textContent = `Upgrade 2 (Cost: ${upgrade2Cost}) - +5 per click`;
         updateScore();
+        updatePointsPerClick();
+        showPopup('Upgrade 2 purchased!');
     } else {
-        alert('Not enough points for upgrade!');
+        showPopup('Not enough coins!');
     }
 });
 
-autoClickerButton.addEventListener('click', () => {
-    if (score >= autoClickerCost) {
-        score -= autoClickerCost;
-        autoClickerIncome += 200;
-        autoClickerCost *= 2;
-        autoClickerButton.textContent = `Auto-Clicker (Cost: ${autoClickerCost}) - +${autoClickerIncome}/hour for 3 hours`;
-        autoClickerExpiry = Date.now() + 3 * 60 * 60 * 1000; // 3 hours from now
+document.getElementById('auto-clicker-button').addEventListener('click', () => {
+    if (score >= 500) {
+        score -= 500;
+        autoClickerActive = true;
+        localStorage.setItem('autoClickerActive', 'true');
         updateScore();
-        startAutoClicker();
-    } else {
-        alert('Not enough points for auto-clicker!');
-    }
-});
-
-function updateScore() {
-    scoreElement.textContent = score;
-    incomeElement.textContent = `Income: ${autoClickerIncome}/hour`;
-    pointsPerClickElement.textContent = `Points per Click: ${pointsPerClick}`;
-    localStorage.setItem('score', score);
-    localStorage.setItem('pointsPerClick', pointsPerClick);
-    localStorage.setItem('autoClickerIncome', autoClickerIncome);
-    localStorage.setItem('upgrade1Cost', upgrade1Cost);
-    localStorage.setItem('upgrade2Cost', upgrade2Cost);
-    localStorage.setItem('autoClickerCost', autoClickerCost);
-    localStorage.setItem('autoClickerExpiry', autoClickerExpiry);
-}
-
-function showCoinPopup(points) {
-    const popup = document.createElement('div');
-    popup.className = 'coin-popup';
-    popup.textContent = `+${points}`;
-    document.body.appendChild(popup);
-    popup.style.left = `${clickableCoin.getBoundingClientRect().left + 20}px`;
-    popup.style.top = `${clickableCoin.getBoundingClientRect().top - 20}px`;
-    setTimeout(() => {
-        popup.remove();
-    }, 1000);
-}
-
-function showNotification(message, coinCount) {
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-
-    const coins = Math.min(coinCount, 10); // Ограничиваем количество монет до 10
-    let coinHtml = '';
-    for (let i = 0; i < coins; i++) {
-        coinHtml += '<img src="coin.png" class="coin-icon" />';
-    }
-    
-    notification.innerHTML = `${message} ${coinHtml}`;
-    document.body.appendChild(notification);
-    setTimeout(() => {
-        notification.remove();
-    }, 5000); // Удаляем уведомление через 5 секунд
-}
-
-function startAutoClicker() {
-    if (autoClickerIncome > 0 && Date.now() < autoClickerExpiry) {
-        if (autoClickerInterval === null) {
-            autoClickerInterval = setInterval(() => {
-                score += autoClickerIncome / 60;
+        showPopup('Auto-Clicker purchased!');
+        // Activate auto-clicker
+        setInterval(() => {
+            if (autoClickerActive) {
+                score += 200;
                 updateScore();
-            }, 60000);
-        }
+            }
+        }, 3600000); // every hour
     } else {
-        clearInterval(autoClickerInterval);
-        autoClickerInterval = null;
-        autoClickerIncome = 0;
-        localStorage.setItem('autoClickerIncome', autoClickerIncome);
+        showPopup('Not enough coins!');
     }
+});
+
+if (autoClickerActive) {
+    setInterval(() => {
+        if (autoClickerActive) {
+            score += 200;
+            updateScore();
+        }
+    }, 3600000); // every hour
 }
 
-function applyOfflineEarnings() {
-    const now = Date.now();
-    let earnedCoins = 0;
-
-    if (now < autoClickerExpiry) {
-        const elapsedHours = (now - lastActive) / (1000 * 60 * 60);
-        earnedCoins = Math.floor(autoClickerIncome * elapsedHours);
-        score += earnedCoins;
-    }
-
-    lastActive = now;
-    localStorage.setItem('lastActive', lastActive);
-    localStorage.setItem('score', score);
-
-    // Показываем уведомление о заработанных монетах
-    if (earnedCoins > 0) {
-        showNotification(`You've earned ${earnedCoins} coins while you were away!`, earnedCoins);
-    }
-
-    startAutoClicker();
-}
-
-function updateLeaderboard() {
-    fetch('/leaderboard')
-        .then(response => response.json())
-        .then(data => {
-            leaderboardEntries.innerHTML = '';
-            data.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.className = 'leaderboard-entry';
-                entryDiv.innerHTML = `
-                    <img src="${entry.avatar}" alt="Avatar" class="leaderboard-avatar">
-                    <span class="leaderboard-name">${entry.name}</span>
-                    <span class="leaderboard-score">${entry.score}</span>
-                `;
-                leaderboardEntries.appendChild(entryDiv);
-            });
-        });
-}
+// Initialize
+updateScore();
+updatePointsPerClick();
+updateIncome();
