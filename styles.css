@@ -1,21 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;900&display=swap');
 
-/* Убираем синий квадрат для изображений */
-img {
-    -webkit-touch-callout: none; /* Убираем выделение текста в некоторых браузерах */
-    -webkit-user-select: none; /* Убираем выделение текста в некоторых браузерах */
-    -ms-user-select: none; /* Убираем выделение текста в некоторых браузерах */
-    user-select: none; /* Убираем выделение текста в некоторых браузерах */
-    outline: none; /* Убираем обводку */
-}
-
-/* Убираем стили для кнопок при нажатии */
-button:focus {
-    outline: none;
-    border: none;
-    box-shadow: none;
-}
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -27,10 +11,14 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(to right, #f8b500, #f6d365); /* Летние цвета */
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Летние цвета */
     font-family: 'Roboto', sans-serif;
     margin: 0;
     overflow: hidden;
+    -webkit-touch-callout: none; /* Убирает выделение текста на мобильных устройствах */
+    -webkit-user-select: none; /* Убирает выделение текста на мобильных устройствах */
+    -ms-user-select: none; /* Убирает выделение текста в некоторых браузерах */
+    user-select: none; /* Убирает выделение текста в некоторых браузерах */
 }
 
 .container {
@@ -60,28 +48,28 @@ h1 {
 }
 
 #score-container {
-    font-size: 1.5em; /* Уменьшаем размер шрифта для текста */
+    font-size: 1.5em; /* Сделать надпись с текущими монетами меньше */
     margin-bottom: 10px;
     font-weight: 700;
 }
 
 #score-label {
-    font-size: 1.2em; /* Уменьшаем размер шрифта для метки */
+    font-size: 1.2em;
 }
 
 #score {
-    font-size: 2em; /* Уменьшаем размер шрифта для текущих монет */
+    font-size: 2em; /* Увеличить размер текущих монет */
     font-weight: 700;
 }
 
 #clickable-coin {
-    width: 150px; /* Увеличиваем размер монеты */
+    width: 150px; /* Увеличить размер монеты */
     cursor: pointer;
     transition: transform 0.1s ease;
     margin-top: 20px;
-    border: none; /* Убираем обводку */
-    outline: none; /* Убираем обводку */
-    background: none; /* Убираем фоновый цвет */
+    outline: none; /* Убирает обводку */
+    border: none; /* Убирает рамку */
+    background: none; /* Убирает фон */
 }
 
 #clickable-coin:active {
