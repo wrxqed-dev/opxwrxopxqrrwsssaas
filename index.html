@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idle Clicker Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>OPX Coin</h1>
+        <div class="stats">
+            <div class="stat-item" id="score-container">
+                <span id="score-label">Coins:</span>
+                <span id="score">0</span>
+            </div>
+            <div class="stat-item" id="income">Income: 0/hour</div>
+            <div class="stat-item" id="points-per-click">Points per Click: 1</div>
+        </div>
+        <img src="coin.png" alt="Coin" id="clickable-coin">
+        <div>
+            <button id="shop-button">Shop</button>
+            <button id="leaderboard-button">Leaderboard</button>
+        </div>
+    </div>
+
+    <div id="shop" class="hidden">
+        <h2>Shop</h2>
+        <div class="upgrade">
+            <button id="upgrade1-button">Upgrade 1 (Cost: 10) - +1 per click</button>
+        </div>
+        <div class="upgrade">
+            <button id="upgrade2-button">Upgrade 2 (Cost: 100) - +5 per click</button>
+        </div>
+        <div class="upgrade">
+            <button id="auto-clicker-button">Auto-Clicker (Cost: 500) - +200/hour for 3 hours</button>
+        </div>
+        <button id="close-shop-button">Close Shop</button>
+    </div>
+
+    <div id="leaderboard" class="hidden">
+        <h2>Leaderboard</h2>
+        <div id="leaderboard-entries"></div>
+        <button id="close-leaderboard-button">Close Leaderboard</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
