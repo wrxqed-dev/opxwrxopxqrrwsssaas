@@ -1,0 +1,5 @@
+[
+    {"name": "Player1", "score": 1000, "avatar": "https://via.placeholder.com/50"},
+    {"name": "Player2", "score": 800, "avatar": "https://via.placeholder.com/50"},
+    {"name": "Player3", "score": 600, "avatar": "https://via.placeholder.com/50"}
+]
