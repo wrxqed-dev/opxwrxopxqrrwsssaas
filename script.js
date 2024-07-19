@@ -15,7 +15,6 @@ const shop = document.getElementById('shop');
 const leaderboard = document.getElementById('leaderboard');
 const leaderboardEntries = document.getElementById('leaderboard-entries');
 
-// Обновление баллов и дохода
 function updateScore() {
     scoreElement.textContent = score;
     localStorage.setItem('score', score);
@@ -31,7 +30,6 @@ function updateIncome() {
     localStorage.setItem('incomePerHour', incomePerHour);
 }
 
-// Функция для отображения всплывающих сообщений
 function showPopup(message) {
     const popup = document.createElement('div');
     popup.className = 'notification';
@@ -42,20 +40,19 @@ function showPopup(message) {
     }, 2000);
 }
 
-// Обработчик клика по монете
 clickableCoin.addEventListener('click', () => {
     score += pointsPerClick;
     updateScore();
     showPopup(`+${pointsPerClick}`);
 });
 
-// Обработчики кнопок
 shopButton.addEventListener('click', () => {
     shop.classList.remove('hidden');
 });
 
 leaderboardButton.addEventListener('click', () => {
     leaderboard.classList.remove('hidden');
+    // Fetch and display leaderboard entries
     fetchLeaderboard();
 });
 
@@ -67,31 +64,27 @@ closeLeaderboardButton.addEventListener('click', () => {
     leaderboard.classList.add('hidden');
 });
 
-// Функция для получения данных лидерборда из JSON-файла
-async function fetchLeaderboard() {
-    try {
-        const response = await fetch('leaderboard.json'); // Путь к вашему JSON-файлу
-        if (!response.ok) throw new Error('Network response was not ok.');
-        const data = await response.json();
+function fetchLeaderboard() {
+    // Simulate fetching leaderboard data
+    const mockData = [
+        { name: 'Player1', score: 1000, avatar: 'https://via.placeholder.com/50' },
+        { name: 'Player2', score: 800, avatar: 'https://via.placeholder.com/50' },
+        { name: 'Player3', score: 600, avatar: 'https://via.placeholder.com/50' }
+    ];
 
-        leaderboardEntries.innerHTML = '';
-        data.forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'leaderboard-entry';
-            div.innerHTML = `
-                <img src="${entry.avatar}" class="leaderboard-avatar" alt="${entry.name}">
-                <span class="leaderboard-name">${entry.name}</span>
-                <span class="leaderboard-score">${entry.score}</span>
-            `;
-            leaderboardEntries.appendChild(div);
-        });
-    } catch (error) {
-        console.error('Error fetching leaderboard data:', error);
-        leaderboardEntries.innerHTML = '<p>Failed to load leaderboard.</p>';
-    }
+    leaderboardEntries.innerHTML = '';
+    mockData.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'leaderboard-entry';
+        div.innerHTML = `
+            <img src="${entry.avatar}" class="leaderboard-avatar" alt="${entry.name}">
+            <span class="leaderboard-name">${entry.name}</span>
+            <span class="leaderboard-score">${entry.score}</span>
+        `;
+        leaderboardEntries.appendChild(div);
+    });
 }
 
-// Обработчики для кнопок улучшений и автокликера
 document.getElementById('upgrade1-button').addEventListener('click', () => {
     if (score >= 10) {
         score -= 10;
@@ -123,6 +116,7 @@ document.getElementById('auto-clicker-button').addEventListener('click', () => {
         localStorage.setItem('autoClickerActive', 'true');
         updateScore();
         showPopup('Auto-Clicker purchased!');
+        // Activate auto-clicker
         setInterval(() => {
             if (autoClickerActive) {
                 score += 200;
@@ -134,7 +128,6 @@ document.getElementById('auto-clicker-button').addEventListener('click', () => {
     }
 });
 
-// Инициализация
 if (autoClickerActive) {
     setInterval(() => {
         if (autoClickerActive) {
@@ -144,6 +137,7 @@ if (autoClickerActive) {
     }, 3600000); // every hour
 }
 
+// Initialize
 updateScore();
 updatePointsPerClick();
 updateIncome();
